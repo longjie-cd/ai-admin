@@ -7,6 +7,15 @@ from api.sys.dict import service
 router = APIRouter(prefix="/sys/dict", tags=["dict"])
 
 
+@router.get("/public/value/{code}", response_model=ApiResponse)
+def get_dict_value_public(code: str):
+    """公开接口：无需认证，按 code 获取字典值（用于登录页等场景）"""
+    item = service.get_dict_by_code(code)
+    if not item:
+        return ApiResponse.fail(message="字典项不存在")
+    return ApiResponse.ok(data=item.model_dump())
+
+
 @router.get("", response_model=ApiResponse)
 def list_dicts(_: str = Depends(get_current_user)):
     return ApiResponse.ok(data=service.list_dicts().model_dump())

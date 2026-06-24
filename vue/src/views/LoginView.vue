@@ -2,12 +2,13 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useSystemStore } from '@/stores/system'
 import Button from '@/components/ui/Button.vue'
 import Input from '@/components/ui/Input.vue'
-import Card from '@/components/ui/Card.vue'
 
 const router = useRouter()
 const auth = useAuthStore()
+const systemStore = useSystemStore()
 
 const username = ref('')
 const password = ref('')
@@ -16,6 +17,8 @@ const error = ref('')
 const wallpaper = ref<{ url: string; copyright: string } | null>(null)
 
 onMounted(async () => {
+  systemStore.fetchSystemName()
+
   try {
     const res = await fetch('/api/bing/wallpaper')
     const json = await res.json()
@@ -73,9 +76,11 @@ async function handleLogin() {
     <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
 
     <!-- 登录卡片 -->
-    <Card class="relative z-10 w-full max-w-sm mx-4 p-8 bg-white/10 backdrop-blur-md border-white/20 shadow-2xl">
+    <div
+      class="login-glass-card relative z-10 w-full max-w-sm mx-4 p-8"
+    >
       <div class="mb-8 text-center">
-        <h1 class="text-2xl font-bold text-white tracking-tight">AI Admin</h1>
+        <h1 class="text-2xl font-bold text-white tracking-tight">{{ systemStore.systemName }}</h1>
         <p class="mt-1 text-sm text-white/60">请登录以继续</p>
       </div>
 
@@ -120,11 +125,19 @@ async function handleLogin() {
       >
         {{ wallpaper.copyright }}
       </p>
-    </Card>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.login-glass-card {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.35);
+}
+
 .fade-enter-active {
   transition: opacity 0.8s ease;
 }

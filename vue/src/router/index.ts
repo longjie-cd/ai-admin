@@ -13,8 +13,13 @@ const router = createRouter({
       path: '/',
       component: () => import('@/layouts/AdminLayout.vue'),
       meta: { requiresAuth: true },
-      redirect: '/sys/user',
       children: [
+        {
+          path: '',
+          name: 'home',
+          component: () => import('@/views/HomeView.vue'),
+          meta: { requiresAuth: true },
+        },
         {
           path: 'profile',
           name: 'profile',
@@ -62,6 +67,24 @@ const router = createRouter({
           name: 'sys-menu',
           component: () => import('@/views/sys/MenuView.vue'),
           meta: { requiresAuth: true, title: '菜单管理' },
+        },
+        {
+          path: 'sys/message',
+          name: 'sys-message',
+          component: () => import('@/views/sys/MessageView.vue'),
+          meta: { requiresAuth: true, title: '消息管理' },
+        },
+        {
+          path: 'sys/todo',
+          name: 'sys-todo',
+          component: () => import('@/views/sys/TodoView.vue'),
+          meta: { requiresAuth: true, title: '待办管理' },
+        },
+        {
+          path: 'sys/schedule',
+          name: 'sys-schedule',
+          component: () => import('@/views/sys/ScheduleView.vue'),
+          meta: { requiresAuth: true, title: '日程管理' },
         },
       ],
     },

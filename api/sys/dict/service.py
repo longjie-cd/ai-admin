@@ -39,6 +39,13 @@ def get_dict(dict_id: int) -> DictOut:
     return _to_out_with_children(item, all_items)
 
 
+def get_dict_by_code(code: str, parent_id=None):
+    item = crud.get_by_code(code, parent_id)
+    if not item:
+        return None
+    return DictOut(**item)
+
+
 def create_dict(body: DictCreate) -> DictOut:
     if crud.get_by_code(body.code, body.parent_id):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="字典编码已存在")

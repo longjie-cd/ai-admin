@@ -17,3 +17,11 @@ def get_current_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
         )
+
+
+def get_current_user_obj(username: str = Depends(get_current_user)):
+    from api.sys.user import crud as user_crud
+    user = user_crud.get_user_by_username(username)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="用户不存在")
+    return user

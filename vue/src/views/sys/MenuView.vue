@@ -254,7 +254,7 @@ onMounted(load)
         </div>
         <div class="space-y-1">
           <label class="text-sm font-medium">排序</label>
-          <Input v-model.number="form.sort" type="number" />
+          <Input v-model="form.sort" type="number" />
         </div>
       </div>
       <div class="space-y-1">

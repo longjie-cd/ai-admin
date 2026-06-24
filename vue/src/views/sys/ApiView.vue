@@ -27,7 +27,7 @@ const METHOD_OPTIONS = [
   { label: 'PATCH', value: 'PATCH' },
 ]
 
-const METHOD_VARIANTS: Record<string, string> = {
+const METHOD_VARIANTS: Record<string, 'default' | 'secondary' | 'success' | 'warning' | 'destructive' | 'outline'> = {
   GET: 'secondary',
   POST: 'success',
   PUT: 'warning',
@@ -176,7 +176,7 @@ onMounted(load)
           <div class="space-y-1">
             <label class="text-sm font-medium">方法</label>
             <Select :model-value="form.method" :options="METHOD_OPTIONS"
-              @update:model-value="form.method = $event" />
+              @update:model-value="form.method = String($event)" />
           </div>
           <div class="col-span-2 space-y-1">
             <label class="text-sm font-medium">路径 *</label>

@@ -1,32 +1,47 @@
 <script setup lang="ts">
-import { cn } from '@/lib/utils'
-
-const props = defineProps<{
+defineProps<{
   class?: string
   type?: string
   placeholder?: string
-  modelValue?: string
+  modelValue?: string | number
   disabled?: boolean
 }>()
-
-defineEmits<{ 'update:modelValue': [value: string] }>()
+defineEmits<{ 'update:modelValue': [value: string | number] }>()
 </script>
 
 <template>
   <input
     v-bind="$attrs"
-    :type="type ?? 'text'"
-    :placeholder="placeholder"
-    :value="modelValue"
-    :disabled="disabled"
-    :class="cn(
-      'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background',
-      'file:border-0 file:bg-transparent file:text-sm file:font-medium',
-      'placeholder:text-muted-foreground',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-      'disabled:cursor-not-allowed disabled:opacity-50',
-      props.class,
-    )"
+    :type="$props.type ?? 'text'"
+    :placeholder="$props.placeholder"
+    :value="$props.modelValue"
+    :disabled="$props.disabled"
+    class="ds-input"
+    :class="$props.class"
     @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
   />
 </template>
+
+<style>
+.ds-input {
+  display: flex;
+  width: 100%;
+  height: var(--input-h);
+  padding: 0 var(--input-px);
+  border-radius: var(--input-radius);
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: hsl(var(--text-1));
+  font-size: var(--input-font-size);
+  line-height: 1;
+  transition: border-color var(--input-transition), box-shadow var(--input-transition);
+  outline: none;
+}
+.ds-input::placeholder { color: hsl(var(--text-3)); }
+.ds-input:hover:not(:disabled) { border-color: hsl(var(--border-strong)); }
+.ds-input:focus {
+  border-color: hsl(var(--primary));
+  box-shadow: var(--input-focus-ring);
+}
+.ds-input:disabled { cursor: not-allowed; opacity: 0.5; background: hsl(var(--bg-sunken)); }
+</style>

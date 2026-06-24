@@ -223,9 +223,9 @@ onMounted(load)
         <Input v-model="form.code" placeholder="如：gender" :disabled="isEdit" />
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium">类型</label>
-        <Select :model-value="form.type" :options="[{label: 'String', value: 'string'}, {label: 'Number', value: 'number'}, {label: 'Boolean', value: 'boolean'}, {label: 'JSON', value: 'json'}, {label: 'Textarea', value: 'textarea'}]" placeholder="请选择"
-          @update:model-value="form.type = $event" />
+          <label class="text-sm font-medium">类型</label>
+          <Select :model-value="form.type" :options="[{label: 'String', value: 'string'}, {label: 'Number', value: 'number'}, {label: 'Boolean', value: 'boolean'}, {label: 'JSON', value: 'json'}, {label: 'Textarea', value: 'textarea'}]" placeholder="请选择"
+          @update:model-value="form.type = String($event)" />
       </div>
       <div class="space-y-1">
         <label class="text-sm font-medium">值 *</label>
@@ -260,10 +260,10 @@ onMounted(load)
           class="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary font-mono text-xs"
         />
       </div>
-      <div class="space-y-1">
-        <label class="text-sm font-medium">排序</label>
-        <Input v-model.number="form.sort" type="number" placeholder="数字越小越靠前" />
-      </div>
+        <div class="space-y-1">
+          <label class="text-sm font-medium">排序</label>
+          <Input v-model="form.sort" type="number" placeholder="数字越小越靠前" />
+        </div>
       <div class="space-y-1">
         <label class="text-sm font-medium">描述</label>
         <Input v-model="form.description" placeholder="可选" />

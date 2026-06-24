@@ -8,6 +8,9 @@ from api.sys.team.router import router as team_router
 from api.sys.dict.router import router as dict_router
 from api.sys.api_interface.router import router as api_router
 from api.sys.menu.router import router as menu_router
+from api.sys.message.router import router as message_router
+from api.sys.todo.router import router as todo_router
+from api.sys.schedule.router import router as schedule_router
 
 router = APIRouter()
 
@@ -20,3 +23,6 @@ router.include_router(team_router)
 router.include_router(dict_router)
 router.include_router(api_router)
 router.include_router(menu_router)
+router.include_router(message_router)
+router.include_router(todo_router)
+router.include_router(schedule_router)

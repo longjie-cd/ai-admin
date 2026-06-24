@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { userApi, type User, type UserCreate, type UserUpdate } from '@/api/sys/user'
+import { userApi, type User } from '@/api/sys/user'
 import { roleApi, type Role } from '@/api/sys/role'
 import { teamApi, type Team } from '@/api/sys/team'
 import Table from '@/components/ui/Table.vue'
@@ -25,13 +25,24 @@ const DATA_SCOPE_OPTIONS = [
   { label: '全部数据', value: 'all' },
 ]
 
-const form = ref<UserCreate & UserUpdate>({
+type UserForm = {
+  username: string
+  password: string
+  nickname: string
+  email: string
+  role_ids: number[]
+  team_id: number | null
+  disabled: boolean
+  data_scope: string
+  department_ids: number[]
+}
+
+const form = ref<UserForm>({
   username: '', password: '', nickname: '', email: '',
   role_ids: [], team_id: null, disabled: false,
   data_scope: 'personal', department_ids: [],
 })
 
-const roleOptions = computed(() => roles.value.map(r => ({ label: r.name, value: r.id })))
 const teamOptions = computed(() => [
   { label: '无', value: '' },
   ...teams.value.map(t => ({ label: t.name, value: t.id })),
@@ -59,7 +70,7 @@ function openCreate() {
 function openEdit(user: User) {
   isEdit.value = true
   editId.value = user.id
-  form.value = { username: user.username, nickname: user.nickname ?? '', email: user.email ?? '', role_ids: [...user.role_ids], team_id: user.team_id, disabled: user.disabled, data_scope: user.data_scope ?? 'personal', department_ids: [...(user.department_ids ?? [])] }
+  form.value = { username: user.username, password: '', nickname: user.nickname ?? '', email: user.email ?? '', role_ids: [...user.role_ids], team_id: user.team_id, disabled: user.disabled, data_scope: user.data_scope ?? 'personal', department_ids: [...(user.department_ids ?? [])] }
   dialogOpen.value = true
 }
 
@@ -204,7 +215,7 @@ onMounted(load)
         <div class="space-y-1">
           <label class="text-sm font-medium">数据权限</label>
           <Select :model-value="form.data_scope ?? 'personal'" :options="DATA_SCOPE_OPTIONS"
-            @update:model-value="form.data_scope = $event" />
+            @update:model-value="form.data_scope = String($event)" />
         </div>
         <div v-if="isEdit" class="flex items-center gap-2">
           <input id="disabled" type="checkbox" :checked="form.disabled" @change="form.disabled = ($event.target as HTMLInputElement).checked" />
