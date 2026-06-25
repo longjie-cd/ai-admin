@@ -23,6 +23,7 @@ def run() -> None:
     _init_dict()
     _init_menu()
     _init_sample_data()
+    _check_oss()
 
 
 def _init_role() -> None:
@@ -130,6 +131,7 @@ def _init_menu() -> None:
         ("角色管理", "/sys/role", "role"),
         ("权限管理", "/sys/permission", "permission"),
         ("数据字典", "/sys/dict", "dict"),
+        ("文件管理", "/sys/oss", "folder"),
         ("API 管理", "/sys/api", "api"),
         ("菜单管理", "/sys/menu", "menu"),
     ], start=1):
@@ -183,6 +185,15 @@ def _init_sample_data() -> None:
         schedule_crud.create(uid, {"title": title, "description": desc, "start_time": start, "end_time": end, "all_day": False, "color": colors[i]})
 
     print("[init] 示例消息、待办、日程已创建")
+
+
+def _check_oss() -> None:
+    """检查 OSS 配置状态并打印提示。"""
+    from api.core.config import oss_settings
+    if oss_settings.is_configured:
+        print(f"[init] OSS 已配置: bucket={oss_settings.bucket_name}, endpoint={oss_settings.endpoint}")
+    else:
+        print("[init] OSS 未配置，请在 config.yaml 中填写 oss 配置信息")
 
 
 if __name__ == "__main__":

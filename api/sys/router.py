@@ -13,6 +13,7 @@ from api.sys.todo.router import router as todo_router
 from api.sys.schedule.router import router as schedule_router
 from api.sys.quick_entry.router import router as quick_entry_router
 from api.sys.announcement.router import router as announcement_router
+from api.sys.oss.router import router as oss_router
 
 router = APIRouter()
 
@@ -30,3 +31,4 @@ router.include_router(todo_router)
 router.include_router(schedule_router)
 router.include_router(quick_entry_router)
 router.include_router(announcement_router)
+router.include_router(oss_router)

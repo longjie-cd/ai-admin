@@ -104,6 +104,12 @@ const router = createRouter({
           component: () => import('@/views/sys/AnnouncementDetailView.vue'),
           meta: { requiresAuth: true, title: '公告详情' },
         },
+        {
+          path: 'sys/oss',
+          name: 'sys-oss',
+          component: () => import('@/views/sys/OssView.vue'),
+          meta: { requiresAuth: true, title: '文件管理' },
+        },
       ],
     },
   ],
