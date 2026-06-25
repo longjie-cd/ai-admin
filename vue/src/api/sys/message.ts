@@ -7,6 +7,7 @@ export interface Message {
   content: string
   type: 'info' | 'success' | 'warning' | 'error'
   is_read: boolean
+  link: string | null
   created_at: string
 }
 export interface MessageListOut { total: number; items: Message[] }
@@ -17,6 +18,7 @@ export interface MessageCreate {
   user_id?: number
   team_id?: number
   send_scope?: 'user' | 'team' | 'all'
+  link?: string
 }
 export interface MessageUpdate { is_read?: boolean }
 

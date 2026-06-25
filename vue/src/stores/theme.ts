@@ -5,6 +5,8 @@ export interface Theme {
   id: string
   name: string
   primary: string
+  darkPrimary: string
+  primaryForeground: string
   sidebarBg: string
   sidebarActive: string
   gradient: string
@@ -15,6 +17,8 @@ export const THEMES: Theme[] = [
     id: 'violet',
     name: '深紫',
     primary: '258 90% 62%',
+    darkPrimary: '258 90% 68%',
+    primaryForeground: '0 0% 100%',
     sidebarBg: '#0D0B26',
     sidebarActive: 'rgba(139,92,246,0.2)',
     gradient: 'linear-gradient(135deg, #8B5CF6, #6366F1)',
@@ -23,14 +27,28 @@ export const THEMES: Theme[] = [
     id: 'blue',
     name: '深蓝',
     primary: '217 91% 60%',
+    darkPrimary: '217 91% 66%',
+    primaryForeground: '0 0% 100%',
     sidebarBg: '#0A1628',
     sidebarActive: 'rgba(59,130,246,0.2)',
     gradient: 'linear-gradient(135deg, #3B82F6, #2563EB)',
   },
   {
+    id: 'indigo',
+    name: '靛蓝',
+    primary: '234 50% 48%',
+    darkPrimary: '234 50% 55%',
+    primaryForeground: '0 0% 100%',
+    sidebarBg: '#151830',
+    sidebarActive: 'rgba(40,46,101,0.25)',
+    gradient: 'linear-gradient(135deg, #3B429F, #282E65)',
+  },
+  {
     id: 'cyan',
     name: '青碧',
     primary: '192 91% 40%',
+    darkPrimary: '192 91% 46%',
+    primaryForeground: '0 0% 100%',
     sidebarBg: '#061B22',
     sidebarActive: 'rgba(6,182,212,0.2)',
     gradient: 'linear-gradient(135deg, #06B6D4, #0891B2)',
@@ -39,6 +57,8 @@ export const THEMES: Theme[] = [
     id: 'emerald',
     name: '翠绿',
     primary: '158 64% 45%',
+    darkPrimary: '158 64% 51%',
+    primaryForeground: '0 0% 100%',
     sidebarBg: '#071A12',
     sidebarActive: 'rgba(16,185,129,0.2)',
     gradient: 'linear-gradient(135deg, #10B981, #059669)',
@@ -47,6 +67,8 @@ export const THEMES: Theme[] = [
     id: 'rose',
     name: '玫红',
     primary: '350 89% 60%',
+    darkPrimary: '350 89% 66%',
+    primaryForeground: '0 0% 100%',
     sidebarBg: '#1C0A0F',
     sidebarActive: 'rgba(244,63,94,0.2)',
     gradient: 'linear-gradient(135deg, #F43F5E, #E11D48)',
@@ -55,25 +77,30 @@ export const THEMES: Theme[] = [
     id: 'slate',
     name: '石墨',
     primary: '215 25% 45%',
+    darkPrimary: '215 25% 51%',
+    primaryForeground: '0 0% 100%',
     sidebarBg: '#0F1117',
     sidebarActive: 'rgba(100,116,139,0.25)',
     gradient: 'linear-gradient(135deg, #64748B, #475569)',
   },
 ]
 
-function applyTheme(theme: Theme) {
+function applyTheme(theme: Theme, isDark: boolean) {
   const root = document.documentElement
-  root.style.setProperty('--primary', theme.primary)
-  root.style.setProperty('--ring', theme.primary)
-  root.style.setProperty('--accent', theme.primary)
+  const primary = isDark ? theme.darkPrimary : theme.primary
+  root.style.setProperty('--primary', primary)
+  root.style.setProperty('--primary-foreground', theme.primaryForeground)
+  root.style.setProperty('--ring', primary)
+  root.style.setProperty('--accent', primary)
 }
 
-function applyDarkMode(dark: boolean) {
+function applyDarkMode(dark: boolean, theme: Theme) {
   if (dark) {
     document.documentElement.classList.add('dark')
   } else {
     document.documentElement.classList.remove('dark')
   }
+  applyTheme(theme, dark)
 }
 
 function applySidebarMode(light: boolean, theme: Theme) {
@@ -109,14 +136,14 @@ export const useThemeStore = defineStore('theme', () => {
   function setTheme(id: string) {
     themeId.value = id
     localStorage.setItem('theme', id)
-    applyTheme(current())
+    applyTheme(current(), darkMode.value)
     applySidebarMode(sidebarLight.value, current())
   }
 
   function toggleDarkMode() {
     darkMode.value = !darkMode.value
     localStorage.setItem('dark-mode', String(darkMode.value))
-    applyDarkMode(darkMode.value)
+    applyDarkMode(darkMode.value, current())
     // Re-apply sidebar so light-sidebar CSS vars pick up new semantic tokens
     applySidebarMode(sidebarLight.value, current())
   }
@@ -128,8 +155,8 @@ export const useThemeStore = defineStore('theme', () => {
   }
 
   function init() {
-    applyTheme(current())
-    applyDarkMode(darkMode.value)
+    applyTheme(current(), darkMode.value)
+    applyDarkMode(darkMode.value, current())
     applySidebarMode(sidebarLight.value, current())
   }
 

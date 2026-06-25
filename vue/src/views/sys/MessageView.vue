@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { messageApi, type Message } from '@/api/sys/message'
 import { userApi, type User } from '@/api/sys/user'
 import { teamApi, type Team } from '@/api/sys/team'
@@ -7,6 +8,8 @@ import Button from '@/components/ui/Button.vue'
 import Input from '@/components/ui/Input.vue'
 import Select from '@/components/ui/Select.vue'
 import Dialog from '@/components/ui/Dialog.vue'
+
+const router = useRouter()
 
 const messages = ref<Message[]>([])
 const users = ref<User[]>([])
@@ -62,9 +65,13 @@ async function load() {
 }
 
 async function markRead(msg: Message) {
-  if (msg.is_read) return
-  await messageApi.update(msg.id, { is_read: true })
-  msg.is_read = true
+  if (!msg.is_read) {
+    await messageApi.update(msg.id, { is_read: true })
+    msg.is_read = true
+  }
+  if (msg.link) {
+    await router.push(msg.link)
+  }
 }
 
 async function markAllRead() {

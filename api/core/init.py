@@ -121,8 +121,10 @@ def _init_menu() -> None:
 
     for index, (name, path, icon) in enumerate([
         ("消息管理", "/sys/message", "message"),
+        ("公告管理", "/sys/announcement", "announcement"),
         ("待办管理", "/sys/todo", "todo"),
         ("日程管理", "/sys/schedule", "schedule"),
+        ("快捷入口", "/sys/quick-entry", "quick-entry"),
         ("用户管理", "/sys/user", "user"),
         ("团队管理", "/sys/team", "team"),
         ("角色管理", "/sys/role", "role"),

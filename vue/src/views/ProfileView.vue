@@ -70,7 +70,7 @@ onMounted(loadProfile)
 
 <template>
   <div v-if="loading" class="text-center py-12 text-muted-foreground">加载中...</div>
-  <div v-else class="max-w-2xl space-y-4">
+  <div v-else class="max-w-2xl mx-auto space-y-4">
     <h1 class="text-2xl font-bold">个人中心</h1>
 
     <!-- 基本信息 -->

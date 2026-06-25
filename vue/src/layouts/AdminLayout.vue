@@ -74,10 +74,6 @@ const headerStyle = computed(() => ({
   background: 'hsl(var(--primary))',
 }))
 
-const appButtonStyle = computed(() => ({
-  borderColor: 'transparent',
-}))
-
 function toggleSidebar() {
   sidebarCollapsed.value = !sidebarCollapsed.value
   localStorage.setItem('sidebar-collapsed', String(sidebarCollapsed.value))
@@ -124,6 +120,7 @@ async function openMessagesPage() {
 }
 
 async function openMessage(msg: Message) {
+  messageDropdownOpen.value = false
   if (!msg.is_read) {
     try {
       await messageApi.update(msg.id, { is_read: true })
@@ -133,7 +130,11 @@ async function openMessage(msg: Message) {
       // ignore
     }
   }
-  await openMessagesPage()
+  if (msg.link) {
+    await router.push(msg.link)
+  } else {
+    await router.push('/sys/message')
+  }
 }
 
 async function goToProfile() {
@@ -175,8 +176,8 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex h-screen flex-col overflow-hidden bg-[hsl(var(--background))]">
-    <header class="relative z-20 border-b border-white/10 text-white" :style="headerStyle">
-      <div class="flex h-16 items-center gap-4 px-5">
+    <header class="relative z-20 text-white" :style="headerStyle">
+      <div class="flex h-[55px] items-center gap-4 px-5">
         <div class="flex min-w-[180px] items-center gap-3">
           <img
             v-if="systemStore.systemLogo"
@@ -186,12 +187,13 @@ onBeforeUnmount(() => {
           >
           <div
             v-else
-            class="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/18 text-base font-bold text-white shadow-sm"
+            class="flex h-10 w-10 items-center justify-center rounded-2xl text-base font-bold text-white shadow-sm"
+            :style="{ background: themeStore.current().gradient }"
           >
             {{ brandInitial }}
           </div>
           <div class="min-w-0">
-            <p class="truncate text-base font-semibold tracking-[0.08em]">{{ systemStore.systemName }}</p>
+            <p class="truncate text-base font-semibold tracking-[0.08em] text-white">{{ systemStore.systemName }}</p>
           </div>
         </div>
 
@@ -199,9 +201,8 @@ onBeforeUnmount(() => {
           <button
             v-for="app in apps"
             :key="app.id"
-            class="border-b-2 px-3 py-2 text-sm font-medium transition-all"
-            :class="currentApp?.id === app.id ? 'border-white text-white' : 'text-white/74 hover:text-white'"
-            :style="currentApp?.id === app.id ? undefined : appButtonStyle"
+            class="px-3 py-2 text-sm transition-all"
+            :class="currentApp?.id === app.id ? 'text-white font-bold' : 'text-white/60 font-medium hover:text-white'"
             @click="navigateToApp(app)"
           >
             <span class="whitespace-nowrap">{{ app.name }}</span>
@@ -211,7 +212,7 @@ onBeforeUnmount(() => {
         <div class="flex items-center gap-2">
           <div class="relative">
             <button
-              class="relative flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/8 text-white/90 transition hover:bg-white/14"
+              class="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-white/8 text-white/90 transition hover:bg-white/14"
               @click="toggleMessageDropdown"
             >
               <span
@@ -265,7 +266,7 @@ onBeforeUnmount(() => {
             @mouseleave="scheduleCloseUserDropdown"
           >
             <button
-              class="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/8 px-2.5 py-1.5 text-left transition hover:bg-white/14"
+              class="flex items-center gap-2 rounded-2xl bg-white/8 px-2.5 py-1.5 text-left transition hover:bg-white/14"
               @click="userDropdownOpen = !userDropdownOpen"
             >
               <div

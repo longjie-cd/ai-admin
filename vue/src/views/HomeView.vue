@@ -9,6 +9,7 @@ import { roleApi } from '@/api/sys/role'
 import { permissionApi } from '@/api/sys/permission'
 import { todoApi, type Todo } from '@/api/sys/todo'
 import { scheduleApi, type Schedule } from '@/api/sys/schedule'
+import QuickEntryWidget from '@/components/QuickEntryWidget.vue'
 import type { User } from '@/api/sys/user'
 
 const router = useRouter()
@@ -228,6 +229,9 @@ function goToSchedules() {
         </div>
       </div>
     </div>
+
+    <!-- Quick Entry -->
+    <QuickEntryWidget />
 
     <!-- Stats Row -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
