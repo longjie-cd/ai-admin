@@ -15,9 +15,11 @@ const password = ref('')
 const loading = ref(false)
 const error = ref('')
 const wallpaper = ref<{ url: string; copyright: string } | null>(null)
+const logoText = () => systemStore.systemName.trim().charAt(0) || 'A'
 
 onMounted(async () => {
   systemStore.fetchSystemName()
+  systemStore.fetchSystemLogo()
 
   try {
     const res = await fetch('/api/bing/wallpaper')
@@ -80,6 +82,19 @@ async function handleLogin() {
       class="login-glass-card relative z-10 w-full max-w-sm mx-4 p-8"
     >
       <div class="mb-8 text-center">
+        <div v-if="systemStore.systemLogo" class="mb-4 flex justify-center">
+          <img
+            :src="systemStore.systemLogo"
+            :alt="systemStore.systemName"
+            class="h-14 max-w-[220px] object-contain drop-shadow-[0_10px_30px_rgba(15,23,42,0.28)]"
+          >
+        </div>
+        <div
+          v-else
+          class="mb-4 mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white/18 text-2xl font-bold text-white shadow-[0_10px_30px_rgba(15,23,42,0.28)]"
+        >
+          {{ logoText() }}
+        </div>
         <h1 class="text-2xl font-bold text-white tracking-tight">{{ systemStore.systemName }}</h1>
         <p class="mt-1 text-sm text-white/60">请登录以继续</p>
       </div>

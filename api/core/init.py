@@ -8,6 +8,7 @@ from api.sys.role import crud as role_crud
 from api.sys.team import crud as team_crud
 from api.sys.user import crud as user_crud
 from api.sys.dict import crud as dict_crud
+from api.sys.menu import crud as menu_crud
 from api.sys.message import crud as msg_crud
 from api.sys.todo import crud as todo_crud
 from api.sys.schedule import crud as schedule_crud
@@ -20,6 +21,7 @@ def run() -> None:
     _init_team()
     _init_admin()
     _init_dict()
+    _init_menu()
     _init_sample_data()
 
 
@@ -63,18 +65,83 @@ def _init_admin() -> None:
 
 
 def _init_dict() -> None:
-    if dict_crud.get_by_code("system_name"):
+    created = []
+
+    if not dict_crud.get_by_code("system_name"):
+        dict_crud.create({
+            "name": "系统名称",
+            "code": "system_name",
+            "value": "AI Admin",
+            "type": "string",
+            "parent_id": None,
+            "sort": 0,
+            "description": "登录页和顶部导航显示的系统名称",
+        })
+        created.append("system_name")
+
+    if not dict_crud.get_by_code("system_logo"):
+        dict_crud.create({
+            "name": "系统 Logo",
+            "code": "system_logo",
+            "value": "",
+            "type": "string",
+            "parent_id": None,
+            "sort": 1,
+            "description": "系统 Logo 图片地址，支持 http(s) 或 base64",
+        })
+        created.append("system_logo")
+
+    if created:
+        print(f"[init] 字典已创建：{', '.join(created)}")
+
+
+def _init_menu() -> None:
+    if menu_crud.list_all():
         return
-    dict_crud.create({
-        "name": "系统名称",
-        "code": "system_name",
-        "value": "AI Admin",
-        "type": "string",
+
+    dashboard = menu_crud.create({
+        "name": "工作台",
+        "path": "/",
+        "icon": "dashboard",
         "parent_id": None,
         "sort": 0,
-        "description": "登录页和侧边栏显示的系统名称",
+        "api_id": None,
+        "permission_ids": [],
     })
-    print("[init] 字典「system_name」已创建，值：AI Admin")
+
+    system = menu_crud.create({
+        "name": "系统设置",
+        "path": "/sys",
+        "icon": "settings",
+        "parent_id": None,
+        "sort": 100,
+        "api_id": None,
+        "permission_ids": [],
+    })
+
+    for index, (name, path, icon) in enumerate([
+        ("消息管理", "/sys/message", "message"),
+        ("待办管理", "/sys/todo", "todo"),
+        ("日程管理", "/sys/schedule", "schedule"),
+        ("用户管理", "/sys/user", "user"),
+        ("团队管理", "/sys/team", "team"),
+        ("角色管理", "/sys/role", "role"),
+        ("权限管理", "/sys/permission", "permission"),
+        ("数据字典", "/sys/dict", "dict"),
+        ("API 管理", "/sys/api", "api"),
+        ("菜单管理", "/sys/menu", "menu"),
+    ], start=1):
+        menu_crud.create({
+            "name": name,
+            "path": path,
+            "icon": icon,
+            "parent_id": system["id"],
+            "sort": index,
+            "api_id": None,
+            "permission_ids": [],
+        })
+
+    print(f"[init] 默认菜单已创建，顶级应用数：2，工作台 ID：{dashboard['id']}")
 
 
 def _init_sample_data() -> None:
